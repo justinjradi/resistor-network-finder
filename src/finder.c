@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #define VALUE_DECIMALS 3
 #define TOLERANCE_DECIMALS 2
@@ -82,8 +83,8 @@ int main()
 // Creates stock of components
 int init_stock()
 {
-    int min_decade = 1;
-    int max_decade = 2;
+    int start_decade = 1;
+    int end_decade = 2;
     stock_size = E3.size;
     stock = malloc(stock_size * sizeof(struct Component));
     if (stock == NULL)
@@ -93,7 +94,7 @@ int init_stock()
     }
     struct Component temp_component;
     temp_component.tolerance = E3.tolerance;
-    for (int d = min_decade; d <= max_decade; d++)
+    for (int d = start_decade; d <= end_decade; d++)
     {
        for (int c = 0; c < E3.size; c++)
        {
@@ -107,14 +108,15 @@ int deinit_stock()
     free(stock);
 }
 
-int create_symbol(float value, float tolerance, char* buffer)
+int create_symbol(float value, float tolerance, char* symbol)
 {
-    if (buffer == NULL)
+    if (symbol == NULL)
     {
         printf("Error: Null pointer.\n");
         return 1;
     }
-    // Convert value to engineering notation
+    symbol = SYMBOL_TEMPLATE;
+    // Add value to string in engineering notation
     if (value < 0)
     {
         printf("Error: Value out of range.\n");
@@ -123,27 +125,30 @@ int create_symbol(float value, float tolerance, char* buffer)
     int power = 0;
     if (value != 0)
     {
-        while (value < 1)
+        power = (int)floor(log10(value));   // Get exponent
+        power = (power / 3) * 3;            // Round to nearest multiple of 3
+        value *= powf(10, -power);          // Scale value
+        // Correct for algorithm preferring values like 0.1*10^0 over values like 100*10^-3 
+        if (value < 1)                      
         {
-            value *= 10;
-            power--;
-        }
-        while (value > 999)
-        {
-            value /= 10;
-            power++;
-        }
-        while ((power < 0) && ((power % 3) != 0))
-        {
-            value *= 10;
-            power--;
-        }
-        while ((power > 0) && ((power % 3) != 0))
-        {
-            value /= 10;
-            power++;
+            value *= 1000;
+            power -= 3;
         }
     }
-
+    if (value < 1)
+    {
+        symbol[0] = ' ';
+        symbol[1] = ' ';
+        symbol[2] = ' ';
+    }
+    else if (value < 10)
+    {
+        symbol[0] = ' ';
+        symbol[1] = ' ';
+    }
+    else if (value < 100)
+    {
+        symbol [0] = ' ';
+    }
 
 } 
