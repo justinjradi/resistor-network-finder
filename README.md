@@ -1,1 +1,3 @@
-A program that finds a network of standard-value resistors equal to a particular resistance. Also designed to work with capacitors and inductors.
+A program that finds a network of standard-value resistors equal to a particular resistance. It needs some more testing before I can call it complete, but the program should also work with capacitors and inductors, as well as calculate the equivalent tolerance for each network (for when tolerances are being mixed).
+
+For example, I used this program to find out that a resistor with a nominal value of 3.14159k can be created from just four E12 resistors (((68 || 3.3k) + 3.3k) || 47k). Of course, the level of precision in this instance is overkill. Nonetheless, this tool should still be helpful when the lack of flexibility of other calculators becomes too impeding.
